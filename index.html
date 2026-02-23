@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ministerio de las Mascotas — Registro Civil</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;600&display=swap"
+        rel="stylesheet" />
+
+    <!--
+    CSS propio: ahora la ruta apunta dentro de assets/css/
+    Esta es la separación de responsabilidades que pediste.
+    -->
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+
+    <!--
+    Axios desde CDN. Debe cargarse ANTES que nuestro script.js
+    porque script.js necesita que 'axios' ya exista como variable.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <div class="franja-roja"></div>
+
+    <header>
+        <div class="escudo">🐾</div>
+        <div class="header-texto">
+            <h1>Ministerio de las Mascotas</h1>
+            <p>Registro Civil de Animales de Compañía — República de Chile</p>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- TARJETA 1: REGISTRAR (POST) -->
+        <div class="tarjeta">
+            <h2>📋 Registrar Mascota</h2>
+            <p class="descripcion">Inscribir una nueva mascota en el Registro Civil.</p>
+
+            <div class="campo-grupo">
+                <label for="input-nombre-post">Nombre de la mascota</label>
+                <input type="text" id="input-nombre-post" placeholder="Ej: Firulais" />
+            </div>
+
+            <div class="campo-grupo">
+                <label for="input-rut-post">RUT del dueño</label>
+                <input type="text" id="input-rut-post" placeholder="Ej: 12345678-9" />
+            </div>
+
+            <!--
+        CAMPO DE FOTO
+        El input[type=file] real está oculto dentro del drop-zone.
+        El div decorativo es lo que el usuario ve.
+        onchange llama a previsualizarFoto() para mostrar una
+        vista previa inmediata antes de subir al servidor.
+        -->
+            <div class="campo-foto">
+                <label>Foto de la mascota (opcional)</label>
+                <div class="drop-zone" id="drop-zone">
+                    <input type="file" id="input-foto" accept="image/*" onchange="previsualizarFoto(this)" />
+                    <span class="icono-subir">📷</span>
+                    <p class="texto-drop">
+                        <strong>Haz clic para seleccionar</strong><br />
+                        JPG, PNG o WEBP · Máx. 5MB
+                    </p>
+                </div>
+                <!-- La vista previa aparece aquí después de seleccionar -->
+                <div class="preview-foto" id="preview-foto">
+                    <img id="preview-img" src="" alt="Vista previa" />
+                    <span class="nombre-archivo" id="nombre-archivo"></span>
+                </div>
+            </div>
+
+            <button class="btn btn-primario" onclick="registrarMascota()">
+                Registrar mascota
+            </button>
+        </div>
+
+        <!-- TARJETA 2: CONSULTAR (GET) -->
+        <div class="tarjeta">
+            <h2>🔍 Consultar Registro</h2>
+            <p class="descripcion">Buscar por nombre, por RUT, o listar todo el registro.</p>
+
+            <button class="btn btn-secundario" onclick="obtenerTodas()">
+                Ver todas las mascotas
+            </button>
+
+            <div class="separador">o buscar por</div>
+
+            <div class="campo-grupo">
+                <label for="input-nombre-get">Nombre de mascota</label>
+                <input type="text" id="input-nombre-get" placeholder="Ej: Firulais" />
+            </div>
+            <button class="btn btn-primario" onclick="buscarPorNombre()">Buscar por nombre</button>
+
+            <div class="separador">o por</div>
+
+            <div class="campo-grupo">
+                <label for="input-rut-get">RUT del dueño</label>
+                <input type="text" id="input-rut-get" placeholder="Ej: 12345678-9" />
+            </div>
+            <button class="btn btn-primario" onclick="buscarPorRut()">Buscar por RUT</button>
+        </div>
+
+        <!-- TARJETA 3: ELIMINAR (DELETE) -->
+        <div class="tarjeta accion-eliminar">
+            <h2>🗑️ Eliminar del Registro</h2>
+            <p class="descripcion">Dar de baja una mascota o todas las asociadas a un RUT.</p>
+
+            <div class="campo-grupo">
+                <label for="input-nombre-delete">Nombre de mascota</label>
+                <input type="text" id="input-nombre-delete" placeholder="Ej: Firulais" />
+            </div>
+            <button class="btn btn-peligro" onclick="eliminarPorNombre()">Eliminar por nombre</button>
+
+            <div class="separador">o eliminar todas por</div>
+
+            <div class="campo-grupo">
+                <label for="input-rut-delete">RUT del dueño</label>
+                <input type="text" id="input-rut-delete" placeholder="Ej: 12345678-9" />
+            </div>
+            <button class="btn btn-peligro" onclick="eliminarPorRut()">Eliminar todas por RUT</button>
+        </div>
+
+        <!-- PANEL DERECHO: ALERTA + TABLA -->
+        <div class="panel-resultados">
+
+            <div class="alerta" id="alerta">
+                <strong id="alerta-titulo"></strong>
+                <span id="alerta-detalle"></span>
+            </div>
+
+            <div class="tabla-contenedor">
+                <div class="tabla-header">
+                    <h3>Resultados</h3>
+                    <span class="badge" id="badge-count">0</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>🐾 Nombre</th>
+                            <th>🪪 RUT del dueño</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body">
+                        <tr>
+                            <td colspan="3" class="estado-vacio">
+                                Haz clic en una fila para ver el detalle de la mascota.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        Ministerio de las Mascotas · República de Chile · Sistema de Registro Civil
+    </footer>
+
+    <!--
+    MODAL DE DETALLE
+    Está fuera del <main> para que el z-index funcione correctamente
+    y cubra toda la pantalla sin verse afectado por el layout del grid.
+
+    onclick en el overlay (fondo oscuro) cierra el modal si el usuario
+    hace clic fuera del contenido. stopPropagation en .modal evita que
+    un clic dentro del modal lo cierre accidentalmente.
+    -->
+    <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+
+            <div class="modal-foto-container" id="modal-foto-container">
+                <!-- La foto se inyecta aquí desde script.js -->
+            </div>
+
+            <div class="modal-info">
+                <h2 id="modal-nombre"></h2>
+                <p class="modal-etiqueta">RUT del dueño</p>
+                <p class="modal-valor" id="modal-rut"></p>
+            </div>
+
+            <button class="btn-cerrar-modal" onclick="cerrarModal()">
+                Cerrar
+            </button>
+
+        </div>
+    </div>
+
+    <!--
+    JS propio: cargado al FINAL del body.
+    Esto garantiza que cuando el script se ejecute, todos los
+    elementos del HTML ya existen en el DOM y pueden ser encontrados
+    con getElementById. Si lo pusieras en el <head>, los elementos
+    aún no existirían y document.getElementById devolvería null.
+    -->
+    <script src="./assets/js/script.js"></script>
+
+</body>
+
+</html>
