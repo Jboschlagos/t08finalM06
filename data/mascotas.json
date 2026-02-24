@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "nombre": "firulais",
+    "rut": "12354254-9",
+    "foto": "tumblr_nddzl2DjdU1qmt59to1_540-1771900884000.jpg"
+  },
+  {
+    "nombre": "Olivia Andrea Bosch Vio",
+    "rut": "13741168-4",
+    "foto": "olivia 7-1771900963388.jpg"
+  },
+    {
+    "nombre": "Firulais",
+    "rut": "12345678-9",
+    "foto": null
+  },
+  {
+    "nombre": "Luna",
+    "rut": "12345678-9",
+    "foto": null
+  },
+  {
+    "nombre": "Max",
+    "rut": "98765432-1",
+    "foto": null
+  },
+  {
+    "nombre": "Canela",
+    "rut": "11111111-1",
+    "foto": null
+  },
+  {
+    "nombre": "Thor",
+    "rut": "22222222-2",
+    "foto": null
+  }
+]

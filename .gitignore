@@ -1,0 +1,8 @@
+# Dependencias de Node — muy pesadas, se reinstalan con npm install
+node_modules/
+
+# Fotos subidas por usuarios — no deben versionarse
+public/assets/img/*
+
+# Mantener la carpeta img en Git pero sin su contenido
+!public/assets/img/.gitkeep
