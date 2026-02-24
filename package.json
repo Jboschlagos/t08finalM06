@@ -1,13 +1,29 @@
 {
-  "name": "registro-mascotas",
-  "version": "2.0.0",
-  "description": "Ministerio de las Mascotas - Registro Civil con fotos",
-  "main": "server.js",
+  "name": "t08finalm06",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jboschlagos/t08finalM06.git"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jboschlagos/t08finalM06/issues"
+  },
+  "homepage": "https://github.com/Jboschlagos/t08finalM06#readme",
   "dependencies": {
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1"
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
